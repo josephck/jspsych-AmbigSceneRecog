@@ -1,2 +1,2 @@
 # jspsych-AmbigSceneRecog
-A replication of the experiment setup (without the stimuli) used in Grey, S., &amp; Mathews, A. (2000). Effects of training on interpretation of emotional ambiguity. The Quarterly Journal of Experimental Psychology: Section A, 53(4), 1143-1162. (experiment 2)
+A jspsych replication of Yiend, J., Mackintosh, B., & Mathews, A. (2005). Enduring consequences of experimentally induced biases in interpretation. Behaviour research and therapy, 43(6), 779-797. (the ‘test’ trials)
