@@ -2,10 +2,28 @@ div.title {
     text-align:left;
     color: black;
     position: absolute;
-    top: 0%;
-    left: 0%;
+    top: 10%;
+    left: 10%;
     width: 100%;
 
+}
+
+div.compQ {
+    text-align:center;
+    color: black;
+    position: absolute;
+    top: 60%;
+    left:0%;
+    width: 100%;
+}
+
+div.wordfrag {
+    text-align:center;
+    color: black;
+    position: absolute;
+    top: 60%;
+    left:0%;
+    width: 100%;
 }
 
 div.stim {
