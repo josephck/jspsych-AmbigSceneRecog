@@ -37,19 +37,32 @@ const fixation = {
 const instruction_text = '<p>Blah Blah Blah</p>'+
     '<p>Blah Blah Blah Blah</p>';
 
+const recog_inst_text = '<p>Recognition Instruction</p>';
+
+const recog_in_Q_inst_text = '<p>Similarity in meaning?</p>' + 
+'<p>1 = very differnt, 4 = very similar</p>';
 
 const debrief_text ="<p>blah blah blah DONE</p>";
 
 //Stim template for testing purpose
-const teststim_list = [
+const testLearnStim_list = [
   {storyId:1, title:"Testing Story 1", 
   line1:"S1 Line 1 text", line2:"S1 Line 2 text", line3:"S1 Line 3 text",
-  wordfrag:"_BC", wordfrag_corAns:"a", 
-  compQ:"Comp Q text", compQ_corrAns:"y"},
+  wordfrag:"_BC", wordfrag_corAns:"A", 
+  compQ:"Comp Q text", compQ_corrAns:"Y"},
   {storyId:2, title:"Testing Story 2", 
   line1:"S2 Line 1 text", line2:"S2 Line 2 text", line3:"S2 Line 3 text",
-  wordfrag:"_CD", wordfrag_corAns:"b", 
-  compQ:"Comp Q text", compQ_corrAns:"n"}
+  wordfrag:"_CD", wordfrag_corAns:"B", 
+  compQ:"Comp Q text", compQ_corrAns:"N"}
+]
+
+const testRecogStim_list = [
+  {storyId:1, title:"Testing Story 1", 
+  q1:"S1 Q1", q2:"S1 Q2", q3:"S1 Q3",q4:"S1 Q4"
+  },
+  {storyId:2, title:"Testing Story 2", 
+  q1:"S2 Q2", q2:"S2 Q2", q3:"S2 Q3", q4:"S2 Q4"
+  }
 ]
 
 const testing = true
@@ -150,7 +163,7 @@ function genStoryLineStim(variable_name){
   }, {
     type: 'html-keyboard-response',
     stimulus: function(){return genStoryLineStimHtml(variable_name)},
-    prompt: '(press spacebar to continue)',
+    prompt: '<div class = "prompt">(press spacebar to continue)</div>',
     choices: ' ',
     trial_duration: null,
     response_ends_trial: true
@@ -189,14 +202,14 @@ function learning_trials(stimuli, feedback  = false) {
     {
       type: 'html-keyboard-response',
       stimulus: function(){return `<div class = "wordfrag"><p class = "stim">${jsPsych.timelineVariable('wordfrag',true)}</p></div>`},           
-      prompt: "(press S to continue)",
+      prompt: '<div class = "prompt">(press S to continue)</div>',
       choices: ['s'],
       trial_duration: null
     },
     {
       type: 'html-keyboard-response',
       stimulus:  function(){return (`<div class = "wordfrag"><p class = "stim">What was the first missing letter of the word</p></div>`)},           
-      prompt: "(respond on keyboard)",
+      prompt: '<div class = "prompt">(respond on keyboard)</div>',
       choices: jsPsych.ALL_KEYS,
       trial_duration: null,
       data: function(){
@@ -207,7 +220,7 @@ function learning_trials(stimuli, feedback  = false) {
         }
       },
       on_finish: function(data){
-        if (data.key_press == jsPsych.timelineVariable('wordfrag_corAns',true)) {
+        if (data.key_press == jsPsych.timelineVariable('wordfrag_corAns',true).charCodeAt(0)) {
             data.wordfragCorrect = true; 
         } else {
             data.wordfragCorrect = false;
@@ -246,7 +259,7 @@ function learning_trials(stimuli, feedback  = false) {
         }
       },
       on_finish: function(data){
-        if (data.key_press == jsPsych.timelineVariable('compQ_corrAns',true)) {
+        if (data.key_press == jsPsych.timelineVariable('compQ_corrAns',true).charCodeAt(0)) {
             data.compQCorrect = true; 
         } else {
             data.compQCorrect = false;
@@ -267,6 +280,66 @@ function learning_trials(stimuli, feedback  = false) {
 
     return result;
 }
+
+function recognition_trials(stimuli) {
+  function genRecogQStimHtml(qid) {
+    return genTitleHtml(jsPsych.timelineVariable('title',true)) + 
+    `<div class = "stim"><p class = "stim">${jsPsych.timelineVariable(qid,true)}</p></div>`
+  }
+  function genRecogQStim(qid) {
+    return [{
+        type: 'html-keyboard-response',
+        stimulus: function(){return genRecogQStimHtml(qid)},
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 1000
+      },
+      {
+        type: 'html-keyboard-response',
+        stimulus: function(){return genRecogQStimHtml(qid)},
+        choices: ['1','2','3','4'],
+        prompt: '<div class = "prompt">' + recog_in_Q_inst_text + '</div>',
+        trial_duration: null,
+        data: function(){
+          return {
+            storyId: jsPsych.timelineVariable('storyId',true),
+            qid: qid
+          }
+        },
+        on_finish: function(data){
+          data.ans = String.fromCharCode(data.key_press)
+        }
+      }
+    ]
+  }
+
+  result = {
+    timeline_variables: stimuli,
+    randomize_order: true,
+    timeline: [
+      fixation,
+      { //show title for 2000ms
+        type: 'html-keyboard-response',
+        stimulus: function(){return genTitleHtml(jsPsych.timelineVariable('title',true))},
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 2000
+      },
+      {
+        type: 'html-keyboard-response',
+        stimulus: function(){return genTitleHtml(jsPsych.timelineVariable('title',true)) + 
+        `<div class = "recog_inst"><p class = "stim">${recog_inst_text}</p></div>`},
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 2000,
+      }
+      
+    ]
+  }
+  result.timeline = result.timeline.concat(genRecogQStim('q1'))
+  result.timeline = result.timeline.concat(genRecogQStim('q2'))
+  result.timeline = result.timeline.concat(genRecogQStim('q3'))
+  result.timeline = result.timeline.concat(genRecogQStim('q4'))
+  return result
+}
+
 
 //Enviornment constant and variables
 const csv_path = "./csv/";
@@ -300,7 +373,8 @@ if (!testing) {
   })
 } else {
   timeline.push(buildInstruction(instruction_text));
-  timeline.push(learning_trials(teststim_list, feedback = true));
+  timeline.push(learning_trials(testLearnStim_list, feedback = true));
+  timeline.push(recognition_trials(testRecogStim_list));
   timeline.push(buildDebrief(debrief_text));
   jsPsych.init({
     timeline: timeline,

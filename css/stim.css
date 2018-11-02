@@ -35,6 +35,24 @@ div.stim {
     width: 100%;
 }
 
+div.prompt {
+    text-align:center;
+    color: black;
+    position: absolute;
+    top: 70%;
+    left:0%;
+    width: 100%;
+}
+
+div.recog_inst_inQ {
+    text-align:center;
+    color: black;
+    position: absolute;
+    top: 60%;
+    left:0%;
+    width: 100%;
+}
+
 div.instruction {
     text-align:center;
     color: black;
@@ -48,3 +66,4 @@ p.feedback{
     text-align: center;
     color: green;
 }
+
