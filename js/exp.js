@@ -1,6 +1,6 @@
 
 //Data
-const testing = true; //change this to false for csv loading and actual run
+const testing = false; //change this to false for csv loading and actual run
 
 const feedback_msg = {'Correct':'Correct, well done!','Wrong': 'Oops! That was wrong, try again!'}
 
@@ -114,12 +114,12 @@ function readAndBuildBlock(block_para) {
 function buildBlock(block_para, results) {
   function buildSimpleBlock(block_para,results) {
     return {timeline:[buildInstruction(block_para.instruction),
-            block_para.blocktype == 'learn'?learn_trials(results,block_para.feedback):recognition_trials(results),
+            (block_para.blocktype == 'learn')?learning_trials(results,block_para.feedback):recognition_trials(results),
       buildDebrief(block_para.debrief)]
       }
   }
     var block;
-    if (typeof block_para.preprocess === "undefined") {
+    if (!(typeof block_para.preprocess == "function")) {
       return buildSimpleBlock(block_para,results);
     } else {
       block_list = block_para.preprocess(results);
@@ -141,7 +141,7 @@ function genTitleHtml(titletext) {
 function genStoryLineStim(variable_name){
   function genStoryLineStimHtml(variable_name) {
     return genTitleHtml(jsPsych.timelineVariable('title',true)) + 
-    `<div class = "stim"><p class ="stim">${jsPsych.timelineVariable(variable_name, true)}+</p></div>`;
+    `<div class = "stim"><p class ="stim">${jsPsych.timelineVariable(variable_name, true)}</p></div>`;
   }
   return [{
     type: 'html-keyboard-response',
@@ -198,7 +198,7 @@ function learning_trials(stimuli, feedback  = false) {
       type: 'html-keyboard-response',
       stimulus:  function(){return (`<div class = "wordfrag"><p class = "stim">What was the first missing letter of the word</p></div>`)},           
       prompt: '<div class = "prompt">(respond on keyboard)</div>',
-      choices: jsPsych.ALL_KEYS,
+      choices: Array.apply(0, Array(26)).map(function(_,b) { return b + 'A'.charCodeAt(0); }),
       trial_duration: null,
       data: function(){
         return {
