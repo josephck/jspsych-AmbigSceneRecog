@@ -1,28 +1,33 @@
 
 //Data
+const testing = true; //change this to false for csv loading and actual run
+
 const feedback_msg = {'Correct':'Correct, well done!','Wrong': 'Oops! That was wrong, try again!'}
 
 
 const block_para_lists = [{
     instruction: "<p>blah blah blah</p>",
-    stim_csv: "wordlist_p1.csv",
+    stim_csv: "learn_practice.csv",
     debrief: "<p>blah blah blah</p>",
     feedback:true,
-    preprocess:assignTrialCondandShuffle
+    blocktype: "learn",
+    preprocess:null
   },
   {
     instruction: "<p>blah blah blah</p>",
-    stim_csv: "wordlist_p2.csv",
+    stim_csv: "learn_stim.csv",
     debrief: "<p>blah blah blah</p>",
     feedback:true,
-    preprocess:assignTrialCondandShuffle
+    blocktype: "learn",
+    preprocess:ShuffleCond
   },
   {
     instruction: "<p>blah blah blah</p>",
-    stim_csv: "wordlist_exp.csv",
+    stim_csv: "recog_stim.csv",
     debrief: "<p>blah blah blah</p>",
     feedback:false,
-    preprocess:assignTrialCondandShuffle
+    blocktype: "recog",
+    preprocess:ShuffleCond
   }
 ];
 
@@ -65,30 +70,13 @@ const testRecogStim_list = [
   }
 ]
 
-const testing = true
+
 
 //Functions
-function assignTrialCondandShuffle(stim_list) {
-  //Pre: list of stim in format {'threat': 'word1','neutral':'word2'}
-  //post: list of stim in format {'threat','neutral','threatup','probeup','probedir'}
-  // counterbalance threatup, probeup, probedir
-  // 2^3 combinations in total all should have equal no. of trials
-  var factor = {
-    'threatup':[true,false],
-    'probeup':[true,false],
-    'probedir':['left','right']
-  }
-  
-  full_design = jsPsych.randomization.factorial(factors,stim_list.length/8)
+function ShuffleCond(stim_list) {
+//return an array that contains multiple trials lists
 
-  for (i=0;i<stim_list.length/8;i++) {
-    stim_list[i]['threatup'] = full_design[i]['threatup']
-    stim_list[i]['probeup' ] = full_design[i]['probeup' ]
-    stim_list[i]['probedir'] = full_design[i]['probedir']
-  }
-
-
-  return jsPsych.randomization.repeat(stim_list,1);
+  return [jsPsych.randomization.repeat(stim_list,1)];
 }
 
 
@@ -126,7 +114,7 @@ function readAndBuildBlock(block_para) {
 function buildBlock(block_para, results) {
   function buildSimpleBlock(block_para,results) {
     return {timeline:[buildInstruction(block_para.instruction),
-             trials(results,block_para.feedback),
+            block_para.blocktype == 'learn'?learn_trials(results,block_para.feedback):recognition_trials(results),
       buildDebrief(block_para.debrief)]
       }
   }

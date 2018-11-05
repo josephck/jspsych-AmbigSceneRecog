@@ -1,0 +1,3 @@
+storyId,title,line1,line2,line3,wordfrag,wordfrag_corAns,compQ,compQ_corrAns
+1,"Exp Story 1","ES1 Line 1","ES1 Line 2","ES1 Line 3","BCD_F","E","Is this a practice question?","N"
+1,"Exp Story 2","ES2 Line 1","ES2 Line 2","ES2 Line 3","Oran_e","G","Is this not a practice question?","Y"

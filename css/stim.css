@@ -12,7 +12,7 @@ div.compQ {
     text-align:center;
     color: black;
     position: absolute;
-    top: 60%;
+    top: 50%;
     left:0%;
     width: 100%;
 }
@@ -21,7 +21,7 @@ div.wordfrag {
     text-align:center;
     color: black;
     position: absolute;
-    top: 60%;
+    top: 50%;
     left:0%;
     width: 100%;
 }
@@ -30,7 +30,7 @@ div.stim {
     text-align:center;
     color: black;
     position: absolute;
-    top: 60%;
+    top: 50%;
     left:0%;
     width: 100%;
 }
@@ -39,7 +39,7 @@ div.prompt {
     text-align:center;
     color: black;
     position: absolute;
-    top: 70%;
+    top:60%;
     left:0%;
     width: 100%;
 }
